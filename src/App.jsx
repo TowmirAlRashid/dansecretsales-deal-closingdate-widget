@@ -61,6 +61,16 @@ function App() {
     }`;
   };
 
+  const customDate2 = (date) => {
+    const dateObj = new Date(date);
+    let year = dateObj.getFullYear();
+    let month = dateObj.getMonth();
+    let day = dateObj.getDate();
+    return `${day < 10 ? `0${day}` : day}/${
+      month + 1 < 10 ? `0${month + 1}` : month + 1
+    }/${year}`;
+  };
+
   function hexToText(hex) {
     var result = "";
     for (var i = 0; i < hex.length; i += 2) {
@@ -155,6 +165,7 @@ function App() {
             link:
               "https://crmplus.zoho.eu/secretsales/index.do/cxapp/crm/org20098504491/tab/Potentials/" +
               deal?.id,
+            deal_name: deal?.Deal_Name,
           }),
         };
         const funResp = await ZOHO.CRM.FUNCTIONS.execute(fun_name, req_data);
@@ -175,7 +186,15 @@ function App() {
             RecordID: entityId,
             Title: "Closing Date Changed",
             Content:
-              new Date().toISOString().split("T")[0] + ": " + data?.free_text,
+              new Date().toISOString().split("T")[0] +
+              ": Closing Date changed from: " +
+              customDate2(initialClosingDate) +
+              " to " +
+              customDate2(finalClosingDate) +
+              "." +
+              newLine +
+              newLine +
+              data?.free_text,
           });
           if (noteCreateResp?.data?.[0]?.code === "SUCCESS") {
             ZOHO.CRM.UI.Popup.closeReload();
@@ -204,7 +223,13 @@ function App() {
               newLine +
               newLine +
               new Date().toISOString().split("T")[0] +
-              ": " +
+              ": Closing Date changed from: " +
+              customDate2(initialClosingDate) +
+              " to " +
+              customDate2(finalClosingDate) +
+              "." +
+              newLine +
+              newLine +
               data?.free_text;
             const funcName = "developer_update_closing_date_note";
             let req_data = {
@@ -228,7 +253,15 @@ function App() {
               RecordID: entityId,
               Title: "Closing Date Changed",
               Content:
-                new Date().toISOString().split("T")[0] + ": " + data?.free_text,
+                new Date().toISOString().split("T")[0] +
+                ": Closing Date changed from: " +
+                customDate2(initialClosingDate) +
+                " to " +
+                customDate2(finalClosingDate) +
+                "." +
+                newLine +
+                newLine +
+                data?.free_text,
             });
             if (noteCreateResp?.data?.[0]?.code === "SUCCESS") {
               ZOHO.CRM.UI.Popup.closeReload();
